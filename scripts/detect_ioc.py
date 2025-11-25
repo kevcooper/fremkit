@@ -70,6 +70,10 @@ git_log_check = Detection(
     and "hulud" in Path(path).joinpath(file).read_text().lower(),
     "Git log indicates Shai Hulud activity",
 )
+git_ref_tag_check = Detection(
+    lambda path, file: ".git" in path.parts and "hulud" in file.lower(),
+    "Git reference/tag indicates Shai Hulud activity",
+)
 gh_action_check = Detection(
     lambda path, file: file == "discussion.yaml"
     and path.parts[-2:] == (".github", "workflows"),
@@ -89,6 +93,7 @@ def detect_file_ioc(start_dir: Path):
         bun_binary_check,
         hash_checks,
         git_log_check,
+        git_ref_tag_check,
         gh_action_check,
         gh_workflow_check,
     ]
