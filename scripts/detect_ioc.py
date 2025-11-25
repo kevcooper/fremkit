@@ -42,18 +42,18 @@ class Detection:
             }
 
 
-file_check = Detection(
+filename_check = Detection(
     lambda _, file: file in SUS_FILES, "matches known suspicious filename"
 )
 package_json_check = Detection(
     lambda path, file: file == "package.json"
-    and "setup_bun.js" in Path(path).joinpath(file).read_text(),
+    and any(
+        [
+            txt in Path(path).joinpath(file).read_text()
+            for txt in ["setup_bun.js", "bun_environment.js"]
+        ]
+    ),
     "contains bun preinstall script",
-)
-gh_action_check = Detection(
-    lambda path, file: file == "discussion.yaml"
-    and path.parts[-2:] == (".github", "workflows"),
-    "GitHub discussion workflow detected",
 )
 bun_binary_check = Detection(
     lambda path, file: file == "bun" and path.parts[-2:] == (".bun", "bin"),
@@ -64,15 +64,33 @@ hash_checks = Detection(
     and HASHES[sha1(Path(path).joinpath(file).read_bytes()).hexdigest()] == file,
     "matches known suspicious file hash",
 )
+git_log_check = Detection(
+    lambda path, file: file == "HEAD"
+    and path.parts[-2:] == (".git", "logs")
+    and "hulud" in Path(path).joinpath(file).read_text().lower(),
+    "Git log indicates Shai Hulud activity",
+)
+gh_action_check = Detection(
+    lambda path, file: file == "discussion.yaml"
+    and path.parts[-2:] == (".github", "workflows"),
+    "GitHub discussion workflow detected",
+)
+gh_workflow_check = Detection(
+    lambda path, file: path.parts[-2:] == (".github", "workflows")
+    and "hulud" in Path(path).joinpath(file).read_text().lower(),
+    "GitHub workflow indicates Shai Hulud activity",
+)
 
 
 def detect_file_ioc(start_dir: Path):
     detections = [
-        file_check,
+        filename_check,
         package_json_check,
-        gh_action_check,
         bun_binary_check,
         hash_checks,
+        git_log_check,
+        gh_action_check,
+        gh_workflow_check,
     ]
     for path, dirs, files in start_dir.walk():
         for f in files:
