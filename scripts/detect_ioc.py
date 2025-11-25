@@ -3,13 +3,14 @@ from pathlib import Path
 from hashlib import sha1
 from typing import Callable, Dict
 
-ROOT_DIR = Path(__file__).parent.resolve()
-SUS_FILES = ROOT_DIR.joinpath("susfiles.txt").read_text().splitlines()
+ROOT_DIR = Path(__file__).parent.parent.resolve()
+LISTS_DIR = ROOT_DIR.joinpath("lists")
+SUS_FILES = LISTS_DIR.joinpath("susfiles.txt").read_text().splitlines()
 HASHES = {
     h: n
     for n, h in [
         line.strip().split(",")
-        for line in ROOT_DIR.joinpath("hashes.txt").read_text().splitlines()
+        for line in LISTS_DIR.joinpath("hashes.txt").read_text().splitlines()
     ]
 }
 
