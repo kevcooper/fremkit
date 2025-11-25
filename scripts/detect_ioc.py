@@ -13,6 +13,7 @@ SUS_FILES = [
     "npm.json",
     "secrets.json",
     "setup_bun.js",
+    "system.json",
     "trufflehog-findings.json",
     "truffleSecrets.json",
 ]
@@ -67,7 +68,12 @@ hash_checks = Detection(
 git_log_check = Detection(
     lambda path, file: file == "HEAD"
     and path.parts[-2:] == (".git", "logs")
-    and "hulud" in Path(path).joinpath(file).read_text().lower(),
+    and any(
+        [
+            txt in Path(path).joinpath(file).read_text().lower()
+            for txt in ["hulud", "Add Discussion"]
+        ]
+    ),
     "Git log indicates Shai Hulud activity",
 )
 git_ref_tag_check = Detection(
