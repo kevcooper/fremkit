@@ -1,6 +1,7 @@
 import json
 from pathlib import Path
 from hashlib import sha1
+import sys
 from typing import Callable, Dict
 
 ROOT_DIR = Path(__file__).parent.parent.resolve()
@@ -77,7 +78,8 @@ def detect_file_ioc(start_dir: Path):
 
 
 def main():
-    for file_info in detect_file_ioc(Path.home()):
+    start_dir: Path = Path(sys.argv[1]) if len(sys.argv) > 1 else Path.home()
+    for file_info in detect_file_ioc(start_dir):
         print(json.dumps(file_info))
 
 
