@@ -4,15 +4,23 @@ from hashlib import sha1
 import sys
 from typing import Callable, Dict
 
-ROOT_DIR = Path(__file__).parent.parent.resolve()
-LISTS_DIR = ROOT_DIR.joinpath("lists")
-SUS_FILES = LISTS_DIR.joinpath("susfiles.txt").read_text().splitlines()
+
+SUS_FILES = [
+    "bun_environment.js",
+    "cloud.json",
+    "contents.json",
+    "environment.json",
+    "npm.json",
+    "secrets.json",
+    "setup_bun.js",
+    "trufflehog-findings.json",
+    "truffleSecrets.json",
+]
+
 HASHES = {
-    h: n
-    for n, h in [
-        line.strip().split(",")
-        for line in LISTS_DIR.joinpath("hashes.txt").read_text().splitlines()
-    ]
+    "d60ec97eea19fffb4809bc35b91033b52490ca11": "bun_environment.js",
+    "3d7570d14d34b0ba137d502f042b27b0f37a59fa": "bun_environment.js",
+    "d1829b4708126dcc7bea7437c04d1f10eacd4a16": "setup_bun.js",
 }
 
 
@@ -78,7 +86,9 @@ def detect_file_ioc(start_dir: Path):
 
 
 def main():
-    start_dir: Path = Path(sys.argv[1]) if len(sys.argv) > 1 else Path.home()
+    start_dir: Path = (
+        Path(sys.argv[1]).expanduser().resolve() if len(sys.argv) > 1 else Path.home()
+    )
     for file_info in detect_file_ioc(start_dir):
         print(json.dumps(file_info))
 
