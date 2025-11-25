@@ -7,5 +7,6 @@ Toolkit for detecting the ongoing Shai-Hulud supply chain attacks
 - https://github.com/wiz-sec-public/wiz-research-iocs/blob/main/reports/shai-hulud-2-packages.csv
 
 ## Repo Discovery Strings
-Shai-hulud Migration.
+
+Shai-hulud Migration. \
 Sha1-Hulud: The Second Coming.
