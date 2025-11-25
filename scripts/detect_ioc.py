@@ -42,11 +42,12 @@ package_json_check = Detection(
     "contains bun preinstall script",
 )
 gh_action_check = Detection(
-    lambda path, file: file == "discussion.yaml" and ".github/workflows" in str(path),
+    lambda path, file: file == "discussion.yaml"
+    and path.parts[-2:] == (".github", "workflows"),
     "GitHub discussion workflow detected",
 )
 bun_binary_check = Detection(
-    lambda path, file: path == Path.home().joinpath(".bun/bin") and file == "bun",
+    lambda path, file: file == "bun" and path.parts[-2:] == (".bun", "bin"),
     "bun binary exists in home directory",
 )
 hash_checks = Detection(
