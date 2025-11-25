@@ -1,7 +1,6 @@
 bun_environment.js
 cloud.json
 contents.json
-discussion.yaml
 environment.json
 npm.json
 secrets.json
