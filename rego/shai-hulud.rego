@@ -13,6 +13,8 @@ bad_packages contains pkg if {
 	in_bad_pkg_list(pkg)
 }
 
-default detected := false
-
-detected if count(bad_packages) > 0
+deny[msg] if {
+	count(bad_packages) > 0
+	some pkg in bad_packages
+	msg := sprintf("The npm package '%s' is a known malicious package", [pkg])
+}

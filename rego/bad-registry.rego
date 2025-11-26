@@ -25,6 +25,8 @@ bad_packages contains pkg if {
 	}
 }
 
-default detected := false
-
-detected if count(bad_packages) > 0
+deny[msg] if {
+	count(bad_packages) > 0
+	some pkg in bad_packages
+	msg := sprintf("The npm package '%s' was resolved from unapproved registry '%s'", [pkg.name, pkg.resolved])
+}
